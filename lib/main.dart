@@ -9,6 +9,8 @@ import 'package:flutter_real_time_chat_app/config/supabase_config.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await SupabaseConfig.init();
+
   await Supabase.initialize(
     url: SupabaseConfig.supabseUrl,
     anonKey: SupabaseConfig.supabseAnonKey,
