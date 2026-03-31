@@ -252,7 +252,7 @@ class ChatService {
   }
 
   // รับ message แบบ realtime โดยใช้ stream
-  Stream<MessageModel> istenToMessages(String conversationId) {
+  Stream<MessageModel> listenToMessages(String conversationId) {
     return _supabase
         .from('messages')
         .stream(primaryKey: ['id'])
