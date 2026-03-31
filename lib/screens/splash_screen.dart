@@ -19,18 +19,21 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAuth() async {
+    // หน่วงเวลา 2 วินาที
     await Future.delayed(Duration(seconds: 2));
 
     if (!mounted) return;
-
+    // ดึง AuthProvider โดยไม่ subscribe การเปลี่ยนแปลง (listen: false)
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
+    // เช็คสถานะว่าผู้ใช้ login อยู่หรือไม่
     if (authProvider.isAuthenticated) {
+      // ถ้า login แล้ว → ไปหน้า Home
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } else {
+      // ถ้ายังไม่ login → ไปหน้า Login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
