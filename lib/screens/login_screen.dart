@@ -168,8 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         // ถ้า loading → แสดง spinner
                         child: authProvider.isLoading
                             ? SizedBox(
-                                height: 24,
-                                width: 24,
+                                height: 20,
+                                width: 20,
                                 child: CircularProgressIndicator(
                                   color: Colors.white,
                                   strokeWidth: 2,

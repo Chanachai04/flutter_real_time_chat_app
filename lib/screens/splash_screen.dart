@@ -19,12 +19,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAuth() async {
+    // ดึง AuthProvider โดยไม่ subscribe การเปลี่ยนแปลง (listen: false)
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    while (authProvider.isLoading) {
+      // รอจนกว่า authProvider จะโหลดเสร็จ (เช็คสถานะ loading ทุก 100ms)
+      await Future.delayed(Duration(milliseconds: 100));
+    }
     // หน่วงเวลา 2 วินาที
     await Future.delayed(Duration(seconds: 2));
 
     if (!mounted) return;
-    // ดึง AuthProvider โดยไม่ subscribe การเปลี่ยนแปลง (listen: false)
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     // เช็คสถานะว่าผู้ใช้ login อยู่หรือไม่
     if (authProvider.isAuthenticated) {
       // ถ้า login แล้ว → ไปหน้า Home
