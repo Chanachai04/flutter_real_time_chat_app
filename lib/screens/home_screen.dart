@@ -18,11 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    // โหลด conversations ตอนเปิดหน้า
     _loadConversations();
   }
 
   Future<void> _loadConversations() async {
+    // ดึง ChatProvider
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    // โหลดข้อมูล conversation ครั้งแรก
     await chatProvider.loadConversations();
     chatProvider.listenToConversations();
   }
@@ -31,11 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
 
+    // หยุด stream ก่อน logout (กัน memory leak)
     chatProvider.stopListeningToConversations();
+    // logout user
     await authProvider.signOut();
-
+    // ป้องกัน async error
     if (!mounted) return;
-
+    // กลับไปหน้า login และลบ stack เดิม
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -44,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // listen state → ถ้า notifyListeners จะ rebuild
     final authProvider = Provider.of<AuthProvider>(context);
     final chatProvider = Provider.of<ChatProvider>(context);
     return Scaffold(
@@ -51,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Messages"),
         centerTitle: false,
         actions: [
+          // ไปหน้า profile
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -60,13 +67,16 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: const Icon(Icons.person),
           ),
+          // logout
           IconButton(onPressed: _logout, icon: const Icon(Icons.logout)),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: _loadConversations,
         child: chatProvider.isLoading
+            // กำลังโหลด ...
             ? Center(child: CircularProgressIndicator())
+            // ไม่มี conversation
             : chatProvider.conversations.isEmpty
             ? Center(
                 child: Column(
@@ -87,18 +97,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               )
+            // มีข้อมูล → แสดง list
             : ListView.builder(
                 itemCount: chatProvider.conversations.length,
                 itemBuilder: (context, index) {
                   final conversation = chatProvider.conversations[index];
+                  // user อีกฝั่ง
                   final otherUser = conversation.otherUser;
+                  // ข้อความล่าสุด
                   final lastMessage = conversation.lastMessage;
 
                   return ListTile(
+                    // avatar
                     leading: CircleAvatar(
                       backgroundColor: Theme.of(context).colorScheme.primary,
 
                       child: otherUser?.avatarUrl != null
+                          // มีรูป → แสดงรูป
                           ? ClipOval(
                               child: Image.network(
                                 otherUser!.avatarUrl!,
@@ -107,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 40,
                               ),
                             )
+                          // ไม่มีรูป → ใช้อักษรตัวแรก
                           : Text(
                               otherUser?.username[0].toUpperCase() ?? '?',
                               style: TextStyle(
@@ -115,31 +131,37 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                     ),
+                    // username
                     title: Text(
                       otherUser?.username ?? 'Unknown User',
+                      // ถ้ามี unread → ทำตัวหนา
                       style: TextStyle(
                         fontWeight: conversation.unreadCount > 0
                             ? FontWeight.bold
                             : FontWeight.normal,
                       ),
                     ),
+                    // ข้อความล่าสุด
                     subtitle: lastMessage != null
                         ? Text(
                             lastMessage.content,
-                            maxLines: 1,
+                            maxLines: 1, // ตัดบรรทัดเดียว
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(),
                           )
                         : Text("No Messages Yet"),
+                    // ด้านขวา (เวลา + unread)
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        // เวลา message ล่าสุด
                         if (lastMessage != null)
                           Text(
                             timeago.format(lastMessage.createdAt, locale: 'th'),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
+                        // สัญลักษณ์ unread
                         if (conversation.unreadCount > 0)
                           Container(
                             margin: EdgeInsets.only(top: 4),
@@ -162,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                       ],
                     ),
+                    // ไปหน้า chat
                     onTap: () {
                       // Navigator.push(
                       //   context,
@@ -177,6 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
       ),
+      // ปุ่มสร้าง chat ใหม่
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
