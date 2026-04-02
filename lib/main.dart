@@ -7,10 +7,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_real_time_chat_app/config/supabase_config.dart';
 
 void main() async {
+  // ทำให้ Flutter binding พร้อมก่อนเรียก async code
   WidgetsFlutterBinding.ensureInitialized();
-
+  // init config (เช่น โหลด env หรือค่าที่เก็บไว้)
   await SupabaseConfig.init();
-
+  // initialize Supabase client ด้วย URL และ anon key
   await Supabase.initialize(
     url: SupabaseConfig.supabseUrl,
     anonKey: SupabaseConfig.supabseAnonKey,

@@ -58,15 +58,13 @@ class _NewChatScreenState extends State<NewChatScreen> {
     Navigator.pop(context); // ปิด loading dialog
 
     if (conversationId != null) {
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => ChatScreen(
-      //       conversationId: conversation.id,
-      //       otherUser: otherUser!,
-      //     ),
-      //   ),
-      // );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ChatScreen(conversationId: conversationId, otherUser: user),
+        ),
+      );
     } else {
       // ถ้าสร้าง conversation ไม่สำเร็จ → แจ้ง error
       ScaffoldMessenger.of(context).showSnackBar(
