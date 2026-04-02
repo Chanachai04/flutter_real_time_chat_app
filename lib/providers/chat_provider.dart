@@ -31,7 +31,7 @@ class ChatProvider with ChangeNotifier {
   Future<void> loadConversations() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    // notifyListeners();
     try {
       // ดึงข้อมูลจาก service
       _conversations = await _chatService.getConversations();
@@ -68,7 +68,7 @@ class ChatProvider with ChangeNotifier {
   Future<void> loadAllUsers() async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    // notifyListeners();
     try {
       // ดึงข้อมูลจาก service
       _users = await _chatService.getAllUsers();

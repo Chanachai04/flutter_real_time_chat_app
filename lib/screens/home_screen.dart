@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_real_time_chat_app/providers/auth_provider.dart';
 import 'package:flutter_real_time_chat_app/providers/chat_provider.dart';
+import 'package:flutter_real_time_chat_app/screens/chat_screen.dart';
 import 'package:flutter_real_time_chat_app/screens/login_screen.dart';
 import 'package:flutter_real_time_chat_app/screens/new_chat_screen.dart';
 import 'package:flutter_real_time_chat_app/screens/profile_screen.dart';
@@ -186,15 +187,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     // ไปหน้า chat
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ChatScreen(
-                      //       conversationId: conversation.id,
-                      //       otherUser: otherUser!,
-                      //     ),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(
+                            conversationId: conversation.id,
+                            otherUser: otherUser!,
+                          ),
+                        ),
+                      );
                     },
                   );
                 },
@@ -217,6 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    // หยุด stream ตอน widget ถูกทำลาย (กัน memory leak)
     final chatprovider = Provider.of<ChatProvider>(context, listen: false);
     chatprovider.stopListeningToConversations();
     super.dispose();

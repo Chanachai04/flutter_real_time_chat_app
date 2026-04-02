@@ -24,26 +24,34 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
+      // inject provider หลายตัวให้ widget tree ทั้งหมดใช้ได้
       providers: [
+        // จัดการ state authentication
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        // จัดการ state chat (conversations, realtime updates)
         ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: MaterialApp(
+        // ปิด debug banner
         debugShowCheckedModeBanner: false,
+        // theme สำหรับ light mode
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
             brightness: Brightness.light,
           ),
           useMaterial3: true,
+          // ตั้งค่า AppBar default
           appBarTheme: AppBarTheme(centerTitle: true, elevation: 0),
+          // style ของ input field (TextField, TextFormField)
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
             filled: true,
-            fillColor: Colors.grey[100],
+            fillColor: Colors.white,
           ),
+          // style ของ ElevatedButton
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
@@ -53,6 +61,8 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
+
+        // theme สำหรับ dark mode
         darkTheme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
@@ -76,7 +86,9 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
+        // ใช้ theme ตาม system (light/dark ตามเครื่องผู้ใช้)
         themeMode: ThemeMode.system,
+        // หน้าแรกของแอป
         home: SplashScreen(),
       ),
     );
